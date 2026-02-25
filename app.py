@@ -281,6 +281,8 @@ def main():
         st.session_state.subject_backlog_data = None
     if 'show_analysis' not in st.session_state:
         st.session_state.show_analysis = False
+    if 'show_backlog_students' not in st.session_state:
+        st.session_state.show_backlog_students = False
     
    
     uploaded_file = st.file_uploader(
@@ -406,6 +408,109 @@ def main():
                 <div class="metric-label">Students with Backlogs</div>
             </div>
             """, unsafe_allow_html=True)
+            if st.button(
+                f"View {students_with_backlogs} students",
+                key="view_backlog_students",
+                use_container_width=True,
+            ):
+                st.session_state.show_backlog_students = True
+
+        # Detailed list of students with backlogs (triggered by clicking above button)
+        if st.session_state.show_backlog_students:
+            backlog_students = []
+            for seat_no, data in student_data.items():
+                count = data.get("Count", 0)
+                if count > 0:
+                    backlog_students.append(
+                        {
+                            "SEAT NO": seat_no,
+                            "Name": data.get("Name", ""),
+                            "Backlog Count": count,
+                            "Backlog Subjects": ", ".join(data.get("Backlogs", [])),
+                        }
+                    )
+
+            if backlog_students:
+                backlog_df = (
+                    pd.DataFrame(backlog_students)
+                    .sort_values(by="Backlog Count", ascending=False)
+                    .reset_index(drop=True)
+                )
+                backlog_df.index = range(1, len(backlog_df) + 1)
+                st.markdown(
+                    '<div class="section-header"><h3 class="section-title">📚 Students with Backlogs</h3></div>',
+                    unsafe_allow_html=True,
+                )
+                try:
+                    styler = backlog_df.style.set_properties(
+                        subset=["Backlog Count"], **{"text-align": "left"}
+                    ).set_properties(
+                        subset=["Backlog Subjects"],
+                        **{"white-space": "normal", "word-break": "break-word"},
+                    ).set_table_attributes('style="width: 100%; table-layout: fixed;"')
+                    st.markdown(styler.to_html(), unsafe_allow_html=True)
+                except Exception:
+                    st.dataframe(backlog_df, use_container_width=True)
+
+                # Subject-wise backlog details: per subject, list students having backlog
+                subject_data = st.session_state.subject_backlog_data
+                if subject_data:
+                    subject_rows = []
+                    for subject_name, info in subject_data.items():
+                        subject_rows.append(
+                            {
+                                "Subject": subject_name,
+                                "Backlog Count": info.get("Count", 0),
+                                "Students": ", ".join(info.get("Students", [])),
+                            }
+                        )
+
+                    if subject_rows:
+                        subject_df = (
+                            pd.DataFrame(subject_rows)
+                            .sort_values(by="Backlog Count", ascending=False)
+                            .reset_index(drop=True)
+                        )
+                        subject_df.index = range(1, len(subject_df) + 1)
+                        st.markdown(
+                            '<div class="section-header"><h3 class="section-title">📚 Subject-wise Backlogs</h3></div>',
+                            unsafe_allow_html=True,
+                        )
+                        try:
+                            subj_styler = subject_df.style.set_properties(
+                                subset=["Backlog Count"], **{"text-align": "left"}
+                            ).set_properties(
+                                subset=["Students"],
+                                **{"white-space": "normal", "word-break": "break-word"},
+                            ).set_table_attributes('style="width: 100%; table-layout: fixed;"')
+                            st.markdown(subj_styler.to_html(), unsafe_allow_html=True)
+                        except Exception:
+                            st.dataframe(subject_df, use_container_width=True)
+
+                        # Per-subject: show list of students having backlog in the selected subject
+                        subject_list = subject_df["Subject"].tolist()
+                        if subject_list:
+                            selected_subject = st.selectbox(
+                                "Select a subject to see students having backlog in it",
+                                subject_list,
+                                key="subject_backlog_select",
+                            )
+                            if selected_subject:
+                                students_in_subject = subject_data.get(
+                                    selected_subject, {}
+                                ).get("Students", [])
+                                if students_in_subject:
+                                    students_df = pd.DataFrame(
+                                        {"Student Name": students_in_subject}
+                                    )
+                                    students_df.index = range(1, len(students_df) + 1)
+                                    st.markdown(
+                                        f'<div class="section-header"><h3 class="section-title">👨‍🎓 Students having backlog in: {selected_subject}</h3></div>',
+                                        unsafe_allow_html=True,
+                                    )
+                                    st.dataframe(students_df, use_container_width=True)
+            else:
+                st.info("✅ Currently, no students have backlogs.")
         
         # Data Preview Section
         st.markdown('<div class="section-header"><h3 class="section-title">👀 Data Preview</h3></div>', unsafe_allow_html=True)
@@ -450,6 +555,48 @@ def main():
         if st.session_state.show_analysis:
             st.markdown("---")
             st.markdown('<div class="section-header"><h2 class="section-title">📈 Result Analysis</h2></div>', unsafe_allow_html=True)
+
+            # Overall Top 3 Toppers (based on GPA = Total_CP / Total_CRD)
+            top3_df = None
+            try:
+                cp_cols = [c for c in df.columns if c.endswith("_CP")]
+                crd_cols = [c for c in df.columns if c.endswith("_CRD")]
+
+                if cp_cols and crd_cols:
+                    df_cp_crd = df.copy()
+                    df_cp_crd[cp_cols + crd_cols] = df_cp_crd[cp_cols + crd_cols].apply(
+                        pd.to_numeric, errors="coerce"
+                    )
+
+                    df_cp_crd["Total_CP"] = df_cp_crd[cp_cols].sum(axis=1, skipna=True)
+                    df_cp_crd["Total_CRD"] = df_cp_crd[crd_cols].sum(axis=1, skipna=True)
+
+                    valid_mask = df_cp_crd["Total_CRD"] > 0
+                    if valid_mask.any():
+                        df_cp_crd.loc[valid_mask, "GPA"] = (
+                            df_cp_crd.loc[valid_mask, "Total_CP"]
+                            / df_cp_crd.loc[valid_mask, "Total_CRD"]
+                        )
+
+                        top3 = (
+                            df_cp_crd.loc[valid_mask]
+                            .sort_values("GPA", ascending=False)
+                            .head(3)
+                            .copy()
+                        )
+                        top3.insert(0, "Rank", range(1, len(top3) + 1))
+                        cols_to_show = ["Rank", "Name", "SEAT NO", "PRN", "GPA"]
+                        cols_to_show = [c for c in cols_to_show if c in top3.columns]
+                        top3_df = top3[cols_to_show]
+            except Exception:
+                top3_df = None
+
+            if top3_df is not None and len(top3_df) > 0:
+                st.markdown(
+                    '<div class="section-header"><h3 class="section-title">🏆 Overall Top 3 Toppers</h3></div>',
+                    unsafe_allow_html=True,
+                )
+                st.dataframe(top3_df, use_container_width=True)
             
             # Create and display charts
             if st.session_state.student_backlog_data and st.session_state.subject_backlog_data:
