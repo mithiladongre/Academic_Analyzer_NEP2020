@@ -3,3 +3,4 @@ pandas
 openpyxl
 pdfplumber
 plotly
+camelot-py[cv]

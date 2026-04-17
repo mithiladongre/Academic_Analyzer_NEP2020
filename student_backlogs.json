@@ -1,424 +1,96 @@
 {
-  "F240501002": {
-    "Name": "Muneer Abass",
+  "S240502001": {
+    "Name": "Shraddha",
     "Backlogs": [],
     "Count": 0
   },
-  "F240501052": {
-    "Name": "Daberao Payal Sudhakar",
-    "Backlogs": [
-      "Linear Algebra and Calculus",
-      "Quantum Physics",
-      "Mechanics for Robotics",
-      "C Programming for Problem Solving"
-    ],
-    "Count": 4
-  },
-  "F240501057": {
-    "Name": "Vishwaja Suryakant Deshmukh",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501059": {
-    "Name": "Deshmukh Samrudhi Sanjay",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501072": {
-    "Name": "Dhaygonde Vaibhav Suresh",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501075": {
-    "Name": "Dias Sean Xavier",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501112": {
-    "Name": "Jadhav Samarth Rajmal",
-    "Backlogs": [
-      "Integrated Electrical and Electronics Engineering",
-      "C Programming for Problem Solving"
-    ],
-    "Count": 2
-  },
-  "F240501129": {
-    "Name": "Kalavadiya Hasti Jayesh",
-    "Backlogs": [
-      "Linear Algebra and Calculus",
-      "Quantum Physics",
-      "Mechanics for Robotics",
-      "Integrated Electrical and Electronics Engineering",
-      "C Programming for Problem Solving"
-    ],
-    "Count": 5
-  },
-  "F240501136": {
-    "Name": "Karhade Apoorv Mahesh",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501142": {
-    "Name": "Kerkar Parth Prashant",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501160": {
-    "Name": "Kulkarni Aayush Milind",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501165": {
-    "Name": "Mache Rohan Bapu",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501215": {
-    "Name": "Patil Harshwardhan Vijay",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501224": {
-    "Name": "Patil Akshat Sandeep",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501231": {
-    "Name": "Patole Nishant Sandeep",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501258": {
-    "Name": "Manmeet Manjeet Santre",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501268": {
-    "Name": "Shah Jatin Sachin",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501283": {
-    "Name": "Shingare Aryan Nitin",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501284": {
-    "Name": "Aayush Ajay Singh",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501288": {
-    "Name": "Sonawane Nikita Dashrath",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501292": {
-    "Name": "Tamboli Salina Rahimatulla",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240501295": {
-    "Name": "Tanishq Tarate",
-    "Backlogs": [
-      "Linear Algebra and Calculus",
-      "Quantum Physics",
-      "Mechanics for Robotics",
-      "Integrated Electrical and Electronics Engineering",
-      "C Programming for Problem Solving"
-    ],
-    "Count": 5
-  },
-  "F240502012": {
-    "Name": "Ritika Sunil Badiger",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240502014": {
-    "Name": "Bagul Rushikesh Murlidhar",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240502033": {
-    "Name": "Bochkari Nishant Balaji",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240502061": {
-    "Name": "Deshmukh Rudrapratap Manoj",
-    "Backlogs": [
-      "Integrated Electrical and Electronics Engineering"
-    ],
-    "Count": 1
-  },
-  "F240502062": {
-    "Name": "Tanisha Nilesh Deshmukh",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240502068": {
-    "Name": "Akshat Dhabalia",
-    "Backlogs": [
-      "Linear Algebra and Calculus",
-      "Quantum Physics",
-      "Integrated Electrical and Electronics Engineering"
-    ],
-    "Count": 3
-  },
-  "F240502074": {
-    "Name": "Dube Deep Ajay",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240502087": {
-    "Name": "Gogad Pushkar Pankaj",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240502089": {
-    "Name": "Paras Deepak Golangade",
+  "S240502002": {
+    "Name": "Agam Harshvardhan Shahaji",
     "Backlogs": [],
     "Count": 0
   },
-  "F240502108": {
-    "Name": "Jaiswal Vansh Mahesh",
+  "S240502004": {
+    "Name": "Diya Vishal Agrawal",
     "Backlogs": [],
     "Count": 0
   },
-  "F240502131": {
-    "Name": "Katte Rucha Vinesh",
+  "S240502005": {
+    "Name": "Ahire Aryan Vijay",
     "Backlogs": [],
     "Count": 0
   },
-  "F240502185": {
-    "Name": "Divyanshu Ritesh Pandey",
+  "S240502007": {
+    "Name": "Ambekar Siddhi Sunil",
     "Backlogs": [],
     "Count": 0
   },
-  "F240502209": {
-    "Name": "Pawar Akash Vishnu",
+  "S240502011": {
+    "Name": "Apte Kasturee Kedar",
     "Backlogs": [],
     "Count": 0
   },
-  "F240502211": {
-    "Name": "Pethe Anuj Siddhartha",
+  "S240502022": {
+    "Name": "Bardale Amar Vijay",
     "Backlogs": [],
     "Count": 0
   },
-  "F240502222": {
-    "Name": "Ranade Chinmayee Rajesh",
+  "S240502025": {
+    "Name": "Sudeep Bera",
     "Backlogs": [],
     "Count": 0
   },
-  "F240502225": {
-    "Name": "Saggam Suraj Vijaykumar",
+  "S240502026": {
+    "Name": "Bhagwat Aditya Rajkumar",
     "Backlogs": [],
     "Count": 0
   },
-  "F240502245": {
-    "Name": "Vidhi Kishor Shardul",
+  "S240502027": {
+    "Name": "Bhaik Sahil Sunil",
     "Backlogs": [],
     "Count": 0
   },
-  "F240502258": {
-    "Name": "Shirapure Bhagyashree Yogesh",
+  "S240502029": {
+    "Name": "Bhat Aditya Ashwin",
     "Backlogs": [],
     "Count": 0
   },
-  "F240502285": {
-    "Name": "Thatte Sharwari Ajit",
+  "S240502032": {
+    "Name": "Biradar Manasvi Chandrakant",
     "Backlogs": [],
     "Count": 0
   },
-  "F240502303": {
-    "Name": "Shubhada Rajesh Wasnik",
-    "Backlogs": [
-      "Linear Algebra and Calculus",
-      "Mechanics for Robotics",
-      "Integrated Electrical and Electronics Engineering",
-      "C Programming for Problem Solving"
-    ],
-    "Count": 4
-  },
-  "F240503001": {
-    "Name": "Jesnil Anil Jose",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503014": {
-    "Name": "Barde Paras Ajay",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503047": {
-    "Name": "Dudhbhate Ritesh Ankush",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503050": {
-    "Name": "Fulpagare Prathmesh Ganesh",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503085": {
-    "Name": "Joshi Gargi Ankur",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503087": {
-    "Name": "Kadam Vaibhav Sushil",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503090": {
-    "Name": "Kale Reva Gajanan",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503101": {
-    "Name": "Koyal Kembhavi",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503114": {
-    "Name": "Kolekar Kshitij Biroba",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503118": {
-    "Name": "Hansal Kumar",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503119": {
-    "Name": "Kumbhoje Riya Rajgonda",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503120": {
-    "Name": "Lagad Krishna Prakash",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503142": {
-    "Name": "Nair Nishil Ramakrishnan",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503181": {
-    "Name": "Rajput Siddhant Nirajsing",
-    "Backlogs": [
-      "Linear Algebra and Calculus",
-      "Quantum Physics",
-      "Mechanics for Robotics",
-      "Integrated Electrical and Electronics Engineering",
-      "C Programming for Problem Solving"
-    ],
-    "Count": 5
-  },
-  "F240503194": {
-    "Name": "Saxena Misha Kunal",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503201": {
-    "Name": "Shelke Samruddhi Arjun",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503210": {
-    "Name": "Sonone Rushikesh Anil",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503231": {
-    "Name": "Yadav Aditya Subai",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240503233": {
-    "Name": "Zalte Aditya Sanjay",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240504001": {
-    "Name": "Aade Aayush Fulsing",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240504003": {
-    "Name": "Baraf Siddhesh Gangaram",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240504005": {
-    "Name": "Kartik Padmakar Bhangale",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240504027": {
-    "Name": "Jadhav Vedant Nitin",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240504052": {
-    "Name": "Saarth Nouni",
-    "Backlogs": [
-      "Linear Algebra and Calculus",
-      "Mechanics for Robotics",
-      "Integrated Electrical and Electronics Engineering"
-    ],
-    "Count": 3
-  },
-  "F240504059": {
-    "Name": "Dhruval Rajesh Porwal",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240504064": {
-    "Name": "Saylawala Hasan Safakatbhai",
-    "Backlogs": [],
-    "Count": 0
-  },
-  "F240504065": {
-    "Name": "Arshiya Arif Ahmed Sayyed",
+  "S240502035": {
+    "Name": "Boney Samruddhi Prashant",
     "Backlogs": [],
     "Count": 0
   },
-  "F240504066": {
-    "Name": "Shah Manthan Vaibhav",
+  "S240502040": {
+    "Name": "Chalke Yashodhara Chandrakant",
     "Backlogs": [],
     "Count": 0
   },
-  "F240504075": {
-    "Name": "Tewale Om Madhukar",
+  "S240502041": {
+    "Name": "Aryan Mahendra Chambhare",
     "Backlogs": [],
     "Count": 0
   },
-  "F240505001": {
-    "Name": "Arabali Swarup Ajay",
+  "S240502043": {
+    "Name": "Chandane Manoj Bhagwan",
     "Backlogs": [],
     "Count": 0
   },
-  "F240505021": {
-    "Name": "Omkar Ambadas Gulve",
+  "S240502045": {
+    "Name": "Ishan Ravindra Chaudhari",
     "Backlogs": [],
     "Count": 0
-  },
-  "F240505035": {
-    "Name": "Soham Sumit Ladge",
-    "Backlogs": [
-      "Mechanics for Robotics"
-    ],
-    "Count": 1
   },
-  "F240505039": {
-    "Name": "Mali Pranav Sandeep",
+  "S240502048": {
+    "Name": "Chavan Shreyash Dattatray",
     "Backlogs": [],
     "Count": 0
   },
-  "F240505042": {
-    "Name": "Mazire Tanish Nitin",
+  "S240502052": {
+    "Name": "Chothave Shravani Sakharam",
     "Backlogs": [],
     "Count": 0
   }

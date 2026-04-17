@@ -238,7 +238,7 @@ def create_analysis_charts(student_data, subject_data):
         fig_bar.update_layout(height=400, showlegend=False)
         charts['bar'] = fig_bar
     
-    # 3. Subject-wise Backlog Analysis
+    # 3. Course-wise Backlog Analysis
     if subject_data:
         subjects = list(subject_data.keys())
         counts = [subject_data[sub]['Count'] for sub in subjects]
@@ -247,8 +247,8 @@ def create_analysis_charts(student_data, subject_data):
             x=counts,
             y=subjects,
             orientation='h',
-            title="Subject-wise Backlog Analysis",
-            labels={'x': 'Number of Students', 'y': 'Subjects'},
+            title="Course-wise Backlog Analysis",
+            labels={'x': 'Number of Students', 'y': 'Courses'},
             color=counts,
             color_continuous_scale="Oranges"
         )
@@ -349,8 +349,11 @@ def main():
                         st.rerun()
                         
                     except Exception as e:
-                        st.markdown(f'<div class="error-box">❌ Error during conversion: {str(e)}</div>', unsafe_allow_html=True)
-                        st.error("Please ensure the PDF file follows the expected format and try again.")
+                        # st.markdown(f'<div class="error-box">❌ Error during conversion: {str(e)}</div>', unsafe_allow_html=True)
+                        # st.error("Please ensure the PDF file follows the expected format and try again.")
+                        import traceback
+                        st.error("❌ Full Error:")
+                        st.text(traceback.format_exc())
     
     # Preview and Analysis Section
     if st.session_state.file_processed and st.session_state.converted_df is not None:
@@ -360,13 +363,13 @@ def main():
         total_students = len(df)
         total_columns = len(df.columns)
         
-        # Count courses
-        course_cols = [col for col in df.columns if col not in ["SEAT NO", "Name", "Mother Name", "PRN"]]
+        # Count unique course codes (prefix before first underscore)
+        non_data_cols = {"SEAT NO", "Name", "Mother Name", "PRN", "SGPA"}
+        course_cols = [col for col in df.columns if col not in non_data_cols]
         unique_courses = set()
         for col in course_cols:
             if '_' in col:
-                course_prefix = col.split('_')[0]
-                unique_courses.add(course_prefix)
+                unique_courses.add(col.split('_')[0])
         courses_found = len(unique_courses)
         
         # Calculate backlog statistics
@@ -426,7 +429,7 @@ def main():
                             "SEAT NO": seat_no,
                             "Name": data.get("Name", ""),
                             "Backlog Count": count,
-                            "Backlog Subjects": ", ".join(data.get("Backlogs", [])),
+                            "Backlog Courses": ", ".join(data.get("Backlogs", [])),
                         }
                     )
 
@@ -438,28 +441,28 @@ def main():
                 )
                 backlog_df.index = range(1, len(backlog_df) + 1)
                 st.markdown(
-                    '<div class="section-header"><h3 class="section-title">📚 Students with Backlogs</h3></div>',
+                    '<div class="section-header"><h3 class="section-title">📚 Students with Course Backlogs</h3></div>',
                     unsafe_allow_html=True,
                 )
                 try:
                     styler = backlog_df.style.set_properties(
                         subset=["Backlog Count"], **{"text-align": "left"}
                     ).set_properties(
-                        subset=["Backlog Subjects"],
+                        subset=["Backlog Courses"],
                         **{"white-space": "normal", "word-break": "break-word"},
                     ).set_table_attributes('style="width: 100%; table-layout: fixed;"')
                     st.markdown(styler.to_html(), unsafe_allow_html=True)
                 except Exception:
                     st.dataframe(backlog_df, use_container_width=True)
 
-                # Subject-wise backlog details: per subject, list students having backlog
+                # Course-wise backlog details: per course, list students having backlog
                 subject_data = st.session_state.subject_backlog_data
                 if subject_data:
                     subject_rows = []
-                    for subject_name, info in subject_data.items():
+                    for course_name, info in subject_data.items():
                         subject_rows.append(
                             {
-                                "Subject": subject_name,
+                                "Course": course_name,
                                 "Backlog Count": info.get("Count", 0),
                                 "Students": ", ".join(info.get("Students", [])),
                             }
@@ -473,7 +476,7 @@ def main():
                         )
                         subject_df.index = range(1, len(subject_df) + 1)
                         st.markdown(
-                            '<div class="section-header"><h3 class="section-title">📚 Subject-wise Backlogs</h3></div>',
+                            '<div class="section-header"><h3 class="section-title">📚 Course-wise Backlogs</h3></div>',
                             unsafe_allow_html=True,
                         )
                         try:
@@ -488,12 +491,12 @@ def main():
                             st.dataframe(subject_df, use_container_width=True)
 
                         # Per-subject: show list of students having backlog in the selected subject
-                        subject_list = subject_df["Subject"].tolist()
+                        subject_list = subject_df["Course"].tolist()
                         if subject_list:
                             selected_subject = st.selectbox(
-                                "Select a subject to see students having backlog in it",
+                                "Select a course to see students having a backlog in it",
                                 subject_list,
-                                key="subject_backlog_select",
+                                key="course_backlog_select",
                             )
                             if selected_subject:
                                 students_in_subject = subject_data.get(
@@ -505,7 +508,7 @@ def main():
                                     )
                                     students_df.index = range(1, len(students_df) + 1)
                                     st.markdown(
-                                        f'<div class="section-header"><h3 class="section-title">👨‍🎓 Students having backlog in: {selected_subject}</h3></div>',
+                                        f'<div class="section-header"><h3 class="section-title">👨‍🎓 Students with backlog in: {selected_subject}</h3></div>',
                                         unsafe_allow_html=True,
                                     )
                                     st.dataframe(students_df, use_container_width=True)
@@ -556,38 +559,39 @@ def main():
             st.markdown("---")
             st.markdown('<div class="section-header"><h2 class="section-title">📈 Result Analysis</h2></div>', unsafe_allow_html=True)
 
-            # Overall Top 3 Toppers (based on GPA = Total_CP / Total_CRD)
+            # Overall Top 3 Toppers — use SGPA extracted directly from the PDF
             top3_df = None
             try:
-                cp_cols = [c for c in df.columns if c.endswith("_CP")]
-                crd_cols = [c for c in df.columns if c.endswith("_CRD")]
-
-                if cp_cols and crd_cols:
-                    df_cp_crd = df.copy()
-                    df_cp_crd[cp_cols + crd_cols] = df_cp_crd[cp_cols + crd_cols].apply(
-                        pd.to_numeric, errors="coerce"
-                    )
-
-                    df_cp_crd["Total_CP"] = df_cp_crd[cp_cols].sum(axis=1, skipna=True)
-                    df_cp_crd["Total_CRD"] = df_cp_crd[crd_cols].sum(axis=1, skipna=True)
-
-                    valid_mask = df_cp_crd["Total_CRD"] > 0
-                    if valid_mask.any():
-                        df_cp_crd.loc[valid_mask, "GPA"] = (
-                            df_cp_crd.loc[valid_mask, "Total_CP"]
-                            / df_cp_crd.loc[valid_mask, "Total_CRD"]
-                        )
-
+                if "SGPA" in df.columns:
+                    df_sgpa = df.copy()
+                    df_sgpa["SGPA_num"] = pd.to_numeric(df_sgpa["SGPA"], errors="coerce")
+                    valid = df_sgpa["SGPA_num"].notna()
+                    if valid.any():
                         top3 = (
-                            df_cp_crd.loc[valid_mask]
-                            .sort_values("GPA", ascending=False)
+                            df_sgpa[valid]
+                            .sort_values("SGPA_num", ascending=False)
                             .head(3)
                             .copy()
                         )
                         top3.insert(0, "Rank", range(1, len(top3) + 1))
-                        cols_to_show = ["Rank", "Name", "SEAT NO", "PRN", "GPA"]
-                        cols_to_show = [c for c in cols_to_show if c in top3.columns]
-                        top3_df = top3[cols_to_show]
+                        cols_to_show = [c for c in ["Rank", "Name", "SEAT NO", "PRN", "SGPA"] if c in top3.columns]
+                        top3_df = top3[cols_to_show].reset_index(drop=True)
+                else:
+                    # Fallback: compute GPA from CP / CRD columns
+                    cp_cols  = [c for c in df.columns if c.endswith("_CP")]
+                    crd_cols = [c for c in df.columns if c.endswith("_CRD")]
+                    if cp_cols and crd_cols:
+                        df_cp = df.copy()
+                        df_cp[cp_cols + crd_cols] = df_cp[cp_cols + crd_cols].apply(pd.to_numeric, errors="coerce")
+                        df_cp["Total_CP"]  = df_cp[cp_cols].sum(axis=1, skipna=True)
+                        df_cp["Total_CRD"] = df_cp[crd_cols].sum(axis=1, skipna=True)
+                        valid = df_cp["Total_CRD"] > 0
+                        if valid.any():
+                            df_cp.loc[valid, "GPA"] = df_cp.loc[valid, "Total_CP"] / df_cp.loc[valid, "Total_CRD"]
+                            top3 = df_cp[valid].sort_values("GPA", ascending=False).head(3).copy()
+                            top3.insert(0, "Rank", range(1, len(top3) + 1))
+                            cols_to_show = [c for c in ["Rank", "Name", "SEAT NO", "PRN", "GPA"] if c in top3.columns]
+                            top3_df = top3[cols_to_show].reset_index(drop=True)
             except Exception:
                 top3_df = None
 
