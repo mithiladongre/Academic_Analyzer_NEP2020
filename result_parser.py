@@ -10,9 +10,60 @@ SUB_FIELDS = [
 ]
 
 _MARKS_START = re.compile(r"^\d+/\d+$|^---$")
+_COURSE_ID = re.compile(r"^\d{6,7}$")
+_PURE_NUM = re.compile(r"^\d+(\.\d+)?$")
+
+GRADE_TOKENS = {"O", "A+", "A", "B+", "B", "C", "D", "P", "F", "FF", "Ab", "AB", "ABS"}
 
 def _clean(token):
     return token.lstrip("*$#").rstrip("$#").strip()
+
+def _is_name_noise(token):
+    """Reject tokens that are clearly not part of a course title."""
+    t = _clean(token)
+    if not t:
+        return True
+    if _COURSE_ID.match(t):
+        return True
+    if _MARKS_START.match(t):
+        return True
+    if _PURE_NUM.match(t):
+        return True
+    if t in GRADE_TOKENS:
+        return True
+    if t.upper() in SUB_FIELDS:
+        return True
+    return False
+
+def _sanitize_subject_name(raw_name):
+    """Remove known PDF artifacts that can leak into course names."""
+    if not raw_name:
+        return raw_name
+
+    cleaned = re.sub(r"\s+", " ", raw_name).strip(" :,-")
+
+    # Drop leaked student header fragments like: ": S240502230 Name ..."
+    cleaned = re.sub(r"^:?\s*S?\d{8,}\s+Name\s+", "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"^:?\s*Name\s+", "", cleaned, flags=re.IGNORECASE)
+
+    # Remove trailing assessment-note/footer artifacts.
+    cleaned = re.sub(r"-{3,}.*$", "", cleaned).strip()
+    cleaned = re.sub(r"\bCONFIDENTIAL\b.*$", "", cleaned, flags=re.IGNORECASE).strip(" ,-")
+    cleaned = re.sub(
+        r",?\s*CCE\s*=\s*Continuous.*$",
+        "",
+        cleaned,
+        flags=re.IGNORECASE
+    ).strip(" ,-")
+
+    # Keep subject title clean; type is appended separately.
+    cleaned = re.sub(
+        r"\b(THEORY|PRACTICAL|ORAL|PROJECT)\b$",
+        "",
+        cleaned,
+        flags=re.IGNORECASE
+    ).strip()
+    return cleaned
 
 def get_subject_type(name, total, seen):
     name_l = name.lower()
@@ -187,7 +238,8 @@ def pdf_to_excel_wide(pdf_path, excel_path,
                     c_id = cid_w['text'].replace("*", "").strip()
                     
                     if i == 0:
-                        top_bound = s_block['top']
+                        # Start first course close to its own row, not from student header block.
+                        top_bound = cid_w['top'] - 2.0
                     else:
                         top_bound = (course_id_words[i-1]['top'] + cid_w['top']) / 2.0
                         
@@ -210,26 +262,28 @@ def pdf_to_excel_wide(pdf_path, excel_path,
                             if not clean_tok: continue 
                             
                             # Skip the course ID itself
-                            if w['x0'] < 80 and re.match(r"^\d{6,7}$", clean_tok):
+                            if w['x0'] < 80 and _COURSE_ID.match(clean_tok):
                                 continue
-                                
+
                             is_frac_or_dash = bool(_MARKS_START.match(clean_tok))
-                            is_grade = clean_tok in ["O", "A+", "A", "B+", "B", "C", "D", "P", "F", "FF", "Ab", "AB", "ABS"]
-                            is_num = bool(re.match(r"^\d+(\.\d+)?$", clean_tok))
-                            
+                            is_grade = clean_tok in GRADE_TOKENS
+                            is_num = bool(_PURE_NUM.match(clean_tok))
+
                             if not in_marks:
-                                # Safe logic: It's a mark if it's a fraction OR (it's a number/grade AND sits on the right side > 220)
+                                # Marks region starts with fractions, or right-side grade/number tokens.
                                 if is_frac_or_dash or ((is_grade or is_num) and w['x0'] > 220):
                                     in_marks = True
                                     marks.append(w['text'])
                                 else:
-                                    names.append(w['text'])
+                                    # Accept subject-name tokens strictly from the subject-name column.
+                                    if 80 <= w['x0'] <= 230 and not _is_name_noise(clean_tok):
+                                        names.append(w['text'])
                             else:
                                 marks.append(w['text'])
 
                     # Assemble perfect names
                     raw_name = " ".join([_clean(t) for t in names if _clean(t)])
-                    raw_name = re.sub(r"\s+", " ", raw_name).strip()
+                    raw_name = _sanitize_subject_name(raw_name)
 
                     cache = student_records[seat]["_cache"]
                     if raw_name:

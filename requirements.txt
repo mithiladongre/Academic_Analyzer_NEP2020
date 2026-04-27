@@ -4,3 +4,6 @@ openpyxl
 pdfplumber
 plotly
 camelot-py[cv]
+fastapi
+uvicorn
+python-multipart
