@@ -14,3 +14,4 @@ pydantic
 python-dotenv
 sentence-transformers
 langchain-huggingface
+torchvision

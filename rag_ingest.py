@@ -1,8 +1,7 @@
-import time 
 import os
 import pandas as pd
 from dotenv import load_dotenv
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 import chromadb
 import json
 
@@ -16,11 +15,8 @@ def get_chroma_collection():
 def ingest_data_to_vector_db(file_id, df):
     collection = get_chroma_collection()
     
-    # Using the exact model from your available list
-    embeddings = GoogleGenerativeAIEmbeddings(
-        model="models/gemini-embedding-001", 
-        google_api_key=os.getenv("GOOGLE_API_KEY")
-    )
+    print("Loading local embedding model (all-MiniLM-L6-v2)...")
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     
     documents = []
     metadatas = []
@@ -40,27 +36,18 @@ def ingest_data_to_vector_db(file_id, df):
         metadatas.append({"file_id": file_id, "type": "full_record", "seat": seat})
         ids.append(f"{file_id}_{seat}")
 
-    print(f"Starting ingestion. This uses 768-dimension vectors...")
+    print(f"Starting lightning ingestion of {len(documents)} records...")
     
-    batch_size = 2
-    for i in range(0, len(documents), batch_size):
-        batch_docs = documents[i : i + batch_size]
-        if batch_docs:
-            try:
-                # This call handles both embedding and storage
-                collection.add(
-                    documents=batch_docs,
-                    metadatas=metadatas[i : i + batch_size],
-                    ids=ids[i : i + batch_size],
-                    # Pass embeddings explicitly to ensure Chroma doesn't use its 384-dim default
-                    embeddings=embeddings.embed_documents(batch_docs)
-                )
-                print(f"✅ Indexed records {i+1} to {i+len(batch_docs)}")
-                time.sleep(4) 
-                
-            except Exception as e:
-                print(f"⚠️ Error: {e}. Pausing...")
-                time.sleep(10)
+    try:
+        collection.add(
+            documents=documents,
+            metadatas=metadatas,
+            ids=ids,
+            embeddings=embeddings.embed_documents(documents)
+        )
+        print(f"✅ Successfully indexed all {len(documents)} records instantly!")
+    except Exception as e:
+        print(f"⚠️ Error during ingestion: {e}")
     
     print(f"🏁 Finished ingestion for {file_id}")
     return True

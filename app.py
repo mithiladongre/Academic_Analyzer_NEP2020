@@ -646,7 +646,6 @@ def main():
             else:
                 st.info("📊 No backlog data available for analysis.")
                 
-# --- ADD AI CHAT INTERFACE HERE ---
         if st.session_state.show_analysis:
             st.markdown("---")
             st.markdown('<div class="section-header"><h2 class="section-title">🤖 AI Assistant</h2></div>', unsafe_allow_html=True)
@@ -672,8 +671,6 @@ def main():
                 with st.chat_message("assistant"):
                     with st.spinner("Analyzing student data..."):
                         try:
-                            # Call LangGraph Agent
-                            # response = ask_rag_agent(prompt, st.session_state.uploaded_filename, st.session_state.converted_df)
                             response = ask_rag_agent(prompt, st.session_state.uploaded_filename)
                             st.markdown(response)
                             
@@ -681,16 +678,15 @@ def main():
                             st.session_state.messages.append({"role": "assistant", "content": response})
 
                         except Exception as e:
-                            # --- THIS CATCHES THE GOOGLE SERVER CRASHES ---
                             error_msg = str(e)
                             st.warning(error_msg)
                             if "503" in error_msg:
                                 st.warning("⚠️ Google's AI servers are currently experiencing peak global traffic. Please wait 15 seconds and try again.")
-                            # elif "429" in error_msg:
-                            #     st.warning("⏳ We are analyzing data too quickly! Please wait 60 seconds for the speed limit to reset.")
+                            elif "429" in error_msg:
+                                st.warning("⏳ We are analyzing data too quickly! Please wait 60 seconds for the speed limit to reset.")
                             else:
                                 st.error("🚨 An unexpected error occurred. Please try asking a slightly different question.")
-                                print(f"Backend Error: {error_msg}") # Prints to your terminal so you can see what actually broke
+                                print(f"Backend Error: {error_msg}")
 
 if __name__ == "__main__":
     main()

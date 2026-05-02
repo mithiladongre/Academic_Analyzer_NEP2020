@@ -5,3 +5,6 @@ __pycache__/
 
 # Ignore the .env file if it contains sensitive information
 .env
+
+.vscode/
+
